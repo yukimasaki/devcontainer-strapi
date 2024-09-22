@@ -1,0 +1,55 @@
+services:
+  strapi-app:
+    container_name: strapi-app
+    restart: always
+    networks:
+      default: # strapi-dbにアクセスするために必要
+      reverse-proxy-network:
+        aliases:
+          - strapi-app-container
+    build:
+      context: .
+      dockerfile: ./docker/production.dockerfile
+    tty: true
+    volumes:
+      - ./src:/usr/src/app
+    ports:
+      - 10031:1337
+    depends_on:
+      - strapi-db
+    environment:
+      # Altough Database client (DBMS) being used is MariaDB, according to Strapi docs, the value is 'mysql'. For more: @see https://strapi.io/documentation/developer-docs/latest/setup-deployment-guides/configurations.html#database
+      DATABASE_CLIENT: mysql
+      DATABASE_HOST: strapi-db
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_PORT: ${DATABASE_PORT}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_SSL: ${DATABASE_SSL}
+      HOST: ${HOST}
+      PORT: ${PORT}
+      APP_KEYS: ${APP_KEYS}
+      API_TOKEN_SALT: ${API_TOKEN_SALT}
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET}
+      TRANSFER_TOKEN_SALT: ${TRANSFER_TOKEN_SALT}
+      JWT_SECRET: ${JWT_SECRET}
+      NODE_ENV: production
+
+  strapi-db:
+    container_name: strapi-db
+    image: mariadb:latest
+    restart: always
+    volumes:
+      - strapi:/var/lib/mysql
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${DATABASE_NAME}
+      MARIADB_USER: ${DATABASE_USERNAME}
+      MARIADB_PASSWORD: ${DATABASE_PASSWORD}
+
+volumes:
+  strapi:
+
+networks:
+  reverse-proxy-network:
+    external: true

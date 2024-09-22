@@ -1,0 +1,45 @@
+services:
+  strapi-app:
+    container_name: strapi-app
+    restart: always
+    build:
+      context: .
+      dockerfile: ./docker/develop.dockerfile
+    tty: true
+    volumes:
+      - ./src:/usr/src/app
+    ports:
+      - 10031:1337
+    depends_on:
+      - strapi-db
+    environment:
+      # Altough Database client (DBMS) being used is MariaDB, according to Strapi docs, the value is 'mysql'. For more: @see https://strapi.io/documentation/developer-docs/latest/setup-deployment-guides/configurations.html#database
+      DATABASE_CLIENT: mysql
+      DATABASE_HOST: strapi-db
+      DATABASE_NAME: ${DATABASE_NAME:-strapidb}
+      DATABASE_PORT: ${DATABASE_PORT:-3306}
+      DATABASE_USERNAME: ${DATABASE_USERNAME:-strapidb_user}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-P@ssw0rd}
+      DATABASE_SSL: ${DATABASE_SSL:-false}
+      HOST: ${HOST:-0.0.0.0}
+      PORT: ${PORT:-1337}
+      APP_KEYS: ${APP_KEYS:-tobemodified}
+      API_TOKEN_SALT: ${API_TOKEN_SALT:-tobemodified}
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET:-tobemodified}
+      TRANSFER_TOKEN_SALT: ${TRANSFER_TOKEN_SALT:-tobemodified}
+      JWT_SECRET: ${JWT_SECRET:-tobemodified}
+
+  strapi-db:
+    container_name: strapi-db
+    image: mariadb:latest
+    restart: always
+    volumes:
+      - strapi:/var/lib/mysql
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:-r00tP@ssw0rd}
+      MARIADB_DATABASE: ${DATABASE_NAME:-strapidb}
+      MARIADB_USER: ${DATABASE_USERNAME:-strapidb_user}
+      MARIADB_PASSWORD: ${DATABASE_PASSWORD:-P@ssw0rd}
+
+volumes:
+  strapi:
