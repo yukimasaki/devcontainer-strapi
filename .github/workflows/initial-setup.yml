@@ -1,0 +1,69 @@
+name: Setup Docker and Reverse Proxy
+on: workflow_dispatch
+jobs:
+  initial-setip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Docker
+        uses: appleboy/ssh-action@master
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          host: ${{ secrets.SSH_HOST_NAME }}
+          username: ${{ secrets.SSH_USER_NAME }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd ~/repositories
+            git clone github-yukimasaki:yukimasaki/reverse-proxy-kit.git
+            cd reverse-proxy-kit
+            chmod a+x docker-install.sh
+            ./docker-install.sh
+
+      - name: Setup Caddy Container
+        uses: appleboy/ssh-action@master
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          host: ${{ secrets.SSH_HOST_NAME }}
+          username: ${{ secrets.SSH_USER_NAME }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd ~/repositories/reverse-proxy-kit/reverse_proxy
+            docker network create reverse-proxy-network
+            echo "DOMAIN=${{ secrets.CADDY_DOMAIN }}" >> .env
+            echo "EMAIL=${{ secrets.CADDY_EMAIL }}" >> .env
+            echo "CONTAINER_NAME=${{ secrets.CADDY_CONTAINER_NAME }}" >> .env
+            echo "PORT=${{ secrets.CADDY_PORT }}" >> .env
+            docker compose up -d --build
+
+      - name: Setup Strapi Container
+        uses: appleboy/ssh-action@master
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          host: ${{ secrets.SSH_HOST_NAME }}
+          username: ${{ secrets.SSH_USER_NAME }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd ~/repositories/reverse-proxy-kit/services
+            git clone github-yukimasaki:yukimasaki/strapi.git
+            cd strapi
+            echo "DATABASE_NAME=${{ secrets.STRAPI_DATABASE_NAME }}" >> .env
+            echo "DATABASE_PORT=${{ secrets.STRAPI_DATABASE_PORT }}" >> .env
+            echo "DATABASE_USERNAME=${{ secrets.STRAPI_DATABASE_USERNAME }}" >> .env
+            echo "DATABASE_PASSWORD=${{ secrets.STRAPI_DATABASE_PASSWORD }}" >> .env
+            echo "DATABASE_SSL=${{ secrets.STRAPI_DATABASE_SSL }}" >> .env
+            echo "MARIADB_ROOT_PASSWORD=${{ secrets.STRAPI_MARIADB_ROOT_PASSWORD }}" >> .env
+            echo "HOST=${{ secrets.STRAPI_HOST }}" >> .env
+            echo "PORT=${{ secrets.STRAPI_PORT }}" >> .env
+            echo "APP_KEYS=${{ secrets.STRAPI_APP_KEYS }}" >> .env
+            echo "API_TOKEN_SALT=${{ secrets.STRAPI_API_TOKEN_SALT }}" >> .env
+            echo "ADMIN_JWT_SECRET=${{ secrets.STRAPI_ADMIN_JWT_SECRET }}" >> .env
+            echo "TRANSFER_TOKEN_SALT=${{ secrets.STRAPI_TRANSFER_TOKEN_SALT }}" >> .env
+            echo "JWT_SECRET=${{ secrets.STRAPI_JWT_SECRET }}" >> .env
+            docker compose -f docker-compose-prod.yml up -d --build
+            docker compose -f docker-compose-prod.yml exec strapi-app yarn
+            docker compose -f docker-compose-prod.yml exec strapi-app yarn build
+            docker compose -f docker-compose-prod.yml exec strapi-app yarn pm2:start
+            docker compose -f docker-compose-prod.yml exec strapi-app pm2 startup
+            docker compose -f docker-compose-prod.yml exec strapi-app pm2 save
