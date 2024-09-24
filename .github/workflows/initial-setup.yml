@@ -46,8 +46,8 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd ~/repositories/reverse-proxy-kit/services
-            git clone github-yukimasaki:yukimasaki/strapi.git
-            cd strapi
+            git clone github-yukimasaki:yukimasaki/devcontainer-strapi.git
+            cd devcontainer-strapi
             echo "DATABASE_NAME=${{ secrets.STRAPI_DATABASE_NAME }}" >> .env
             echo "DATABASE_PORT=${{ secrets.STRAPI_DATABASE_PORT }}" >> .env
             echo "DATABASE_USERNAME=${{ secrets.STRAPI_DATABASE_USERNAME }}" >> .env
