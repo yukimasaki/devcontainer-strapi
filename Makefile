@@ -10,6 +10,9 @@ yarn@dev:
 yarn@prod:
 	docker compose -f docker-compose-prod.yml exec strapi-app yarn
 
+bash@dev:
+	docker compose -f docker-compose-dev.yml exec strapi-app bash
+
 yarn-develop@dev:
 	docker compose -f docker-compose-dev.yml exec strapi-app yarn develop
 
