@@ -9701,6 +9701,11 @@ statuses@2.0.1:
   resolved "https://registry.yarnpkg.com/statuses/-/statuses-1.5.0.tgz#161c7dac177659fd9811f43771fa99381478628c"
   integrity sha512-OpZ3zP+jT1PI7I8nemJX4AKmAX070ZkYPVWV/AaKTJl+tXCTGyVdC1a4SL8RUQYEwk/f34ZX8UTykN68FwrqAA==
 
+strapi-plugin-ja-pack@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/strapi-plugin-ja-pack/-/strapi-plugin-ja-pack-1.0.4.tgz#7fd12983146538dec3f508651e2422253ef875af"
+  integrity sha512-kYR22SiHM1Pt6Dk6cXnKkQGnBlapDKDFpqBkJXMoYq6tEi+zBSyg7c4VBP5YedpNnlbo8fXNMxvNb9azc2DT6Q==
+
 stream-chain@2.2.5, stream-chain@^2.2.5:
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/stream-chain/-/stream-chain-2.2.5.tgz#b30967e8f14ee033c5b9a19bbe8a2cba90ba0d09"
