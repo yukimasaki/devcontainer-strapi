@@ -37,7 +37,7 @@ services:
 
   strapi-db:
     container_name: strapi-db
-    image: mariadb:latest
+    image: mariadb:10.6
     restart: always
     volumes:
       - strapi:/var/lib/mysql
