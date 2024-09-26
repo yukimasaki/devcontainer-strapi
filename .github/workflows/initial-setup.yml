@@ -1,4 +1,4 @@
-name: Setup Docker and Reverse Proxy
+name: Initial Setup
 on: workflow_dispatch
 jobs:
   initial-setip:
@@ -15,6 +15,7 @@ jobs:
           username: ${{ secrets.SSH_USER_NAME }}
           port: ${{ secrets.SSH_PORT }}
           script: |
+            docker network create reverse-proxy-network
             mkdir ~/repositories
             cd ~/repositories
             git clone github-yukimasaki:yukimasaki/devcontainer-strapi.git
@@ -50,7 +51,6 @@ jobs:
             cd ~/repositories
             git clone github-yukimasaki:yukimasaki/reverse-proxy-kit.git
             cd reverse-proxy-kit
-            docker network create reverse-proxy-network
             echo "DOMAIN=${{ secrets.CADDY_DOMAIN }}" >> .env
             echo "EMAIL=${{ secrets.CADDY_EMAIL }}" >> .env
             echo "CONTAINER_NAME=${{ secrets.CADDY_CONTAINER_NAME }}" >> .env
