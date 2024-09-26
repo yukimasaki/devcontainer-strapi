@@ -7,7 +7,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Docker
+      - name: Setup Caddy Container
         uses: appleboy/ssh-action@master
         with:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -18,18 +18,6 @@ jobs:
             cd ~/repositories
             git clone github-yukimasaki:yukimasaki/reverse-proxy-kit.git
             cd reverse-proxy-kit
-            chmod a+x docker-install.sh
-            ./docker-install.sh
-
-      - name: Setup Caddy Container
-        uses: appleboy/ssh-action@master
-        with:
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          host: ${{ secrets.SSH_HOST_NAME }}
-          username: ${{ secrets.SSH_USER_NAME }}
-          port: ${{ secrets.SSH_PORT }}
-          script: |
-            cd ~/repositories/reverse-proxy-kit/reverse_proxy
             docker network create reverse-proxy-network
             echo "DOMAIN=${{ secrets.CADDY_DOMAIN }}" >> .env
             echo "EMAIL=${{ secrets.CADDY_EMAIL }}" >> .env
@@ -45,7 +33,7 @@ jobs:
           username: ${{ secrets.SSH_USER_NAME }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd ~/repositories/reverse-proxy-kit/services
+            cd ~/repositories
             git clone github-yukimasaki:yukimasaki/devcontainer-strapi.git
             cd devcontainer-strapi
             echo "DATABASE_NAME=${{ secrets.STRAPI_DATABASE_NAME }}" >> .env
