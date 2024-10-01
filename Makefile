@@ -21,3 +21,9 @@ yarn-build@prod:
 
 yarn-start@prod:
 	docker compose -f docker-compose-prod.yml exec strapi-app yarn start
+
+pm2-start@prod:
+  docker compose -f docker-compose-prod.yml exec strapi-app yarn pm2:start
+
+pm2-stop@prod:
+  docker compose -f docker-compose-prod.yml exec strapi-app yarn pm2:stop
