@@ -1,0 +1,26 @@
+name: On Push Production
+on:
+  push:
+    branches: main
+jobs:
+  initial-setip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Pull and Restart
+        uses: appleboy/ssh-action@master
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          host: ${{ secrets.SSH_HOST_NAME }}
+          username: ${{ secrets.SSH_USER_NAME }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            docker restart strapi-app
+            cd ~/repositories/devcontainer-strapi
+            git pull origin main
+            docker compose -f docker-compose-prod.yml exec strapi-app yarn pm2:stop
+            docker compose -f docker-compose-prod.yml exec strapi-app yarn
+            docker compose -f docker-compose-prod.yml exec strapi-app yarn build
+            docker compose -f docker-compose-prod.yml exec strapi-app yarn pm2:start
