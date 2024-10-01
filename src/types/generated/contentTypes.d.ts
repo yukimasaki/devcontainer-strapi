@@ -810,6 +810,7 @@ export interface ApiPostPost extends Schema.CollectionType {
           preset: 'default';
         }
       >;
+    seo: Attribute.Component<'shared.seo'>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
