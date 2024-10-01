@@ -827,6 +827,7 @@ export interface ApiTagTag extends Schema.CollectionType {
     singularName: 'tag';
     pluralName: 'tags';
     displayName: '\u30BF\u30B0';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -834,6 +835,7 @@ export interface ApiTagTag extends Schema.CollectionType {
   attributes: {
     tagName: Attribute.String & Attribute.Required;
     posts: Attribute.Relation<'api::tag.tag', 'manyToMany', 'api::post.post'>;
+    memo: Attribute.String;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

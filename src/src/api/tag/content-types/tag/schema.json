@@ -4,7 +4,8 @@
   "info": {
     "singularName": "tag",
     "pluralName": "tags",
-    "displayName": "タグ"
+    "displayName": "タグ",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -20,6 +21,9 @@
       "relation": "manyToMany",
       "target": "api::post.post",
       "mappedBy": "tags"
+    },
+    "memo": {
+      "type": "string"
     }
   }
 }
