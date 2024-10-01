@@ -1,7 +1,7 @@
 name: Initial Setup
 on: workflow_dispatch
 jobs:
-  initial-setip:
+  initial-setup:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
