@@ -4,7 +4,8 @@
   "info": {
     "singularName": "post",
     "pluralName": "posts",
-    "displayName": "投稿"
+    "displayName": "投稿",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -14,14 +15,19 @@
     "title": {
       "type": "string"
     },
-    "body": {
-      "type": "blocks"
-    },
     "tags": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::tag.tag",
       "inversedBy": "posts"
+    },
+    "body": {
+      "type": "customField",
+      "options": {
+        "preset": "default"
+      },
+      "required": true,
+      "customField": "plugin::ckeditor5.CKEditor"
     }
   }
 }
